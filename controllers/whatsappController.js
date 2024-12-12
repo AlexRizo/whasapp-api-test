@@ -16,31 +16,25 @@ export const checkWebhook = (req, res) => {
 };
 
 export const receiveMessage = (req, res) => {
-    const { body } = req;
+    const data = req.body;
 
-    if (body.object === 'whatsapp_business_account') {
-        body.entry.forEach(entry => {
-            const changes = entry.changes;
-
-            changes.forEach(change => {
-                const message = change.value.messages?.[0];
-
-                if (message) {
-                    const from = message.from;
-                    const body = message.text?.body;
-                    console.log(`Mensaje recibido de ${from}: ${body}`);
-                }
-            });
+    if (data.object === 'whatsapp_business_account') {
+      data.entry.forEach((entry) => {
+        const changes = entry.changes;
+  
+        changes.forEach((change) => {
+          const message = change.value.messages?.[0]; // Mensaje entrante
+          if (message) {
+            const from = message.from; // Número del remitente
+            const body = message.text?.body; // Contenido del mensaje
+  
+            console.log(`Mensaje recibido de ${from}: ${body}`);
+          }
         });
-
-        res.status(200).json({
-            message: 'Message received',
-            status: 200
-        });
+      });
+  
+      res.sendStatus(200);
     } else {
-        res.status(400).json({
-            message: 'Bad Request',
-            status: 400
-        });
-    };
+      res.sendStatus(404);
+    }
 };
