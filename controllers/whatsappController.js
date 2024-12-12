@@ -1,5 +1,5 @@
 export const checkWebhook = (req, res) => {
-    const { mode, challenge, token } = req.query;
+    const { mode, challenge, token } = req.query.hub;
 
     if (mode && token === process.env.WHATSAPP_TOKEN) {
         res.status(200).json({
