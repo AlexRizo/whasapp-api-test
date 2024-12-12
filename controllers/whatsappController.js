@@ -6,10 +6,7 @@ export const checkWebhook = (req, res) => {
     console.log(req.query);
 
     if (mode && token === process.env.WHATSAPP_TOKEN) {
-        res.status(200).json({
-            challenge,
-            status: 200
-        })
+        res.status(200).send(challenge)
     } else {
         res.status(403).json({
             message: 'Forbidden',
