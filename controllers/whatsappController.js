@@ -1,9 +1,9 @@
+import axios from "axios";
+
 export const checkWebhook = (req, res) => {
     const mode = req.query['hub.mode'];
     const token = req.query['hub.verify_token'];
     const challenge = req.query['hub.challenge'];
-
-    console.log(req.query);
 
     if (mode && token === process.env.WHATSAPP_TOKEN) {
         res.status(200).send(challenge)
@@ -67,7 +67,7 @@ export const sendMessage = async(req, res) => {
           });
     } catch (error) {
         console.log(error);
-        
+
         return res.status(500).json({
             success: false,
             message: 'Error al enviar el mensaje',
