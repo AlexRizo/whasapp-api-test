@@ -18,23 +18,21 @@ export const checkWebhook = (req, res) => {
 export const receiveMessage = (req, res) => {
     const data = req.body;
 
+
     if (data.object === 'whatsapp_business_account') {
-      data.entry.forEach((entry) => {
-        const changes = entry.changes;
-  
-        changes.forEach((change) => {
-          const message = change.value.messages?.[0]; // Mensaje entrante
-          if (message) {
-            const from = message.from; // Número del remitente
-            const body = message.text?.body; // Contenido del mensaje
-  
-            console.log(`Mensaje recibido de ${from}: ${body}`);
-          }
+        data.entry.forEach((entry) => {
+            entry.changes.forEach((change) => {
+                const contact = change.value.contacts[0];
+                const message = change.value.messages[0];
+    
+                const userName = contact.profile?.name || 'Usuario desconocido';
+                const userPhone = contact.wa_id;
+    
+                console.log(`Mensaje de ${userName} (${userPhone}): ${message.text.body}`);
+            });
         });
-      });
-  
-      res.sendStatus(200);
+        res.sendStatus(200); // Respuesta OK a WhatsApp
     } else {
-      res.sendStatus(404);
+        res.sendStatus(404);
     }
 };
