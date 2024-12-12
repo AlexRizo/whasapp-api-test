@@ -36,3 +36,42 @@ export const receiveMessage = (req, res) => {
         res.sendStatus(404);
     }
 };
+
+export const sendMessage = async(req, res) => {
+    const { message, phone } = req.body;
+
+    const url = process.env.WHATSAPP_API_URL;
+    const token = process.env.PERMAMENT_ACCESS_TOKEN;
+    
+    const data = {
+        messaging_product: 'whatsapp',
+        to: phone, // Número del destinatario
+        type: 'text',
+        text: {
+          body: message
+        }
+    }
+
+    try {
+        const response = await axios.post(url, data, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Mensaje enviado con éxito',
+            data: response.data
+          });
+    } catch (error) {
+        console.log(error);
+        
+        return res.status(500).json({
+            success: false,
+            message: 'Error al enviar el mensaje',
+            error: error.response?.data || error.message
+        });
+    }
+};
